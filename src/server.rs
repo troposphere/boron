@@ -1,4 +1,14 @@
-use hyper::server::{Server, Request, Response, Listening};
+use hyper::server::{Handler, Server, Listening};
+use hyper::server::Request as UnwrappedRequest;
+use hyper::server::Response as UnwrappedResponse;
+
+struct RequestHandler;
+
+impl Handler for RequestHandler {
+    fn handle(&self, _req: UnwrappedRequest, res: UnwrappedResponse) {
+        res.send(b"Hello World!").unwrap();
+    }
+}
 
 pub struct Tungsten {
     server: Option<Listening>
@@ -12,9 +22,7 @@ impl Tungsten {
     pub fn listen(&mut self, host_port: &str) {
         let server = Server::http(host_port)
             .unwrap()
-            .handle(|_req: Request, res: Response| {
-                res.send(b"Hello World!").unwrap();
-            })
+            .handle(RequestHandler)
             .unwrap();
         self.server = Some(server);
     }
