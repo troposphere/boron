@@ -1,12 +1,14 @@
 use hyper::server::{Handler, Server, Listening};
 use hyper::server::Request as UnwrappedRequest;
 use hyper::server::Response as UnwrappedResponse;
+use response::Response;
 
 struct RequestHandler;
 
 impl Handler for RequestHandler {
     fn handle(&self, _req: UnwrappedRequest, res: UnwrappedResponse) {
-        res.send(b"Hello World!").unwrap();
+        let tungsten_res = Response::wrap_response(res);
+        tungsten_res.send(b"Hello World!");
     }
 }
 
