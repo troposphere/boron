@@ -5,7 +5,7 @@ use std::thread;
 use std::io::Read;
 use hyper::status::StatusCode;
 use hyper::client::Client;
-use tungsten::tungsten::Tungsten;
+use tungsten::server::Tungsten;
 
 fn serve() {
   thread::Builder::new().name(String::from("test-server")).spawn(move || {
