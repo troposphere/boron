@@ -1,16 +1,20 @@
 use hyper::server::{Handler, Server, Listening};
-use request::Request;
 use hyper::server::Request as UnwrappedRequest;
 use hyper::server::Response as UnwrappedResponse;
+use request::Request;
 use response::Response;
+use middleware::Middleware;
+use router::{HttpMethods, Router};
 
-struct RequestHandler;
+struct RequestHandler {
+    router: Router
+}
 
 impl Handler for RequestHandler {
-    fn handle(&self, req: UnwrappedRequest, res: UnwrappedResponse) {
-        let _tungsten_req = Request::wrap_request(req);
+    fn handle<'a, 'k>(&'a self, req: UnwrappedRequest<'a, 'k>, res: UnwrappedResponse<'a>) {
+        let tungsten_req = Request::wrap_request(req);
         let tungsten_res = Response::wrap_response(res);
-        tungsten_res.send(b"Hello World!");
+        self.router.serve(tungsten_req, tungsten_res);
     }
 }
 
@@ -24,9 +28,16 @@ impl Tungsten {
     }
 
     pub fn listen(&mut self, host_port: &str) {
+        let mut router = Router::new("/".to_string());
+        router.get("/".to_string(), |req: Request, res: Response| {
+            res.send(b"Hello World!");
+        });
+        let mut handler = RequestHandler {
+            router: router
+        };
         let server = Server::http(host_port)
             .unwrap()
-            .handle(RequestHandler)
+            .handle(handler)
             .unwrap();
         self.server = Some(server);
     }
