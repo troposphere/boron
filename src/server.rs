@@ -8,7 +8,7 @@ struct RequestHandler;
 
 impl Handler for RequestHandler {
     fn handle(&self, req: UnwrappedRequest, res: UnwrappedResponse) {
-        let tungsten_req = Request::wrap_request(req);
+        let _tungsten_req = Request::wrap_request(req);
         let tungsten_res = Response::wrap_response(res);
         tungsten_res.send(b"Hello World!");
     }
