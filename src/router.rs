@@ -26,7 +26,21 @@ impl Router {
 
     pub fn serve<'m, 'r>(&'m self, req: Request<'m, 'r>, res: Response<'m>) {
         assert!(self.routes.len() > 0);
-        self.routes[0].action.execute(req, res);
+        match self.match_route(req.path().unwrap().to_string()) {
+            Some(route) => route.action.execute(req, res),
+            None => println!("Some error occured.")
+        };
+    }
+
+    fn match_route(&self, path: String) -> Option<&Route> {
+        let mut matched_route = None;
+        for route in self.routes.iter() {
+            if route.path == path.to_string() {
+                matched_route = Some(route);
+                break;
+            }
+        }
+        matched_route
     }
 }
 

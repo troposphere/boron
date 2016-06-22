@@ -11,3 +11,13 @@ impl<T> Middleware for T where T: for <'m, 'r> Fn(Request<'m, 'r>, Response<'m>)
         (*self)(req, res);
     }
 }
+
+pub struct MiddlewareStack {
+    actions: Vec<Box<Middleware + Send + Sync>>
+}
+
+impl MiddlewareStack {
+    pub fn add_action<T: Middleware> (&mut self, action: T) {
+        self.actions.push(Box::new(action));
+    }
+}
