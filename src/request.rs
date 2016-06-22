@@ -1,5 +1,6 @@
 use hyper::server::Request as UnwrappedRequest;
 use hyper::uri::RequestUri::AbsolutePath;
+use hyper::method::Method;
 
 pub struct Request<'a, 'b: 'a> {
     pub req: UnwrappedRequest<'a, 'b>
@@ -17,5 +18,9 @@ impl<'a, 'b> Request<'a, 'b> {
             AbsolutePath(ref path) => Some(path.splitn(2, '?').next().unwrap()),
             _ => None
         }
+    }
+
+    pub fn method(&self) -> &Method {
+        &self.req.method
     }
 }

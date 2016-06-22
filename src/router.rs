@@ -1,8 +1,10 @@
 use middleware::Middleware;
 use request::Request;
 use response::Response;
+use hyper::method::Method;
 
 struct Route {
+    method: Method,
     path: String,
     action: Box<Middleware>
 }
@@ -26,16 +28,16 @@ impl Router {
 
     pub fn serve<'m, 'r>(&'m self, req: Request<'m, 'r>, res: Response<'m>) {
         assert!(self.routes.len() > 0);
-        match self.match_route(req.path().unwrap().to_string()) {
+        match self.match_route(req.method(), req.path().unwrap().to_string()) {
             Some(route) => route.action.execute(req, res),
             None => panic!("Route not found.")
         };
     }
 
-    fn match_route(&self, path: String) -> Option<&Route> {
+    fn match_route(&self, method: &Method, path: String) -> Option<&Route> {
         let mut matched_route = None;
         for route in self.routes.iter() {
-            if route.path == path.to_string() {
+            if route.method == *method && route.path == path.to_string() {
                 matched_route = Some(route);
                 break;
             }
@@ -47,6 +49,7 @@ impl Router {
 impl HttpMethods for Router {
     fn get<T: Middleware>(&mut self, path: String, action: T) {
         let route = Route {
+            method: Method::Get,
             path: path,
             action: Box::new(action)
         };
