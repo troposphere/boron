@@ -25,3 +25,14 @@ fn test_hello_world() {
     assert_eq!(res.status, StatusCode::Ok);
     assert_eq!(body, "Hello World!");
 }
+
+#[test]
+fn test_some_path() {
+    let client = Client::new();
+    let mut res = client.get("http://0.0.0.0:4040/some/random/path").send().unwrap();
+    let mut body = String::new();
+    let _ = res.read_to_string(&mut body);
+
+    assert_eq!(res.status, StatusCode::Ok);
+    assert_eq!(body, "You are at /some/random/path");
+}

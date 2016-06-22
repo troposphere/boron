@@ -32,6 +32,9 @@ impl Tungsten {
         router.get("/".to_string(), |req: Request, res: Response| {
             res.send(b"Hello World!");
         });
+        router.get("/some/random/path".to_string(), |req: Request, res: Response| {
+            res.send(b"You are at /some/random/path");
+        });
         let mut handler = RequestHandler {
             router: router
         };
