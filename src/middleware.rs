@@ -13,7 +13,7 @@ impl<T> Middleware for T where T: for <'m, 'r> Fn(Request<'m, 'r>, Response<'m>)
 }
 
 pub struct MiddlewareStack {
-    actions: Vec<Box<Middleware + Send + Sync>>
+    actions: Vec<Box<Middleware>>
 }
 
 impl MiddlewareStack {

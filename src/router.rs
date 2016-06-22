@@ -28,7 +28,7 @@ impl Router {
         assert!(self.routes.len() > 0);
         match self.match_route(req.path().unwrap().to_string()) {
             Some(route) => route.action.execute(req, res),
-            None => println!("Some error occured.")
+            None => panic!("Route not found.")
         };
     }
 
