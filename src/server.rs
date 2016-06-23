@@ -7,12 +7,13 @@ use middleware::Middleware;
 use router::{HttpMethods, Router};
 
 struct RequestHandler {
+    base_url: String,
     router: Router
 }
 
 impl Handler for RequestHandler {
     fn handle<'a, 'k>(&'a self, req: UnwrappedRequest<'a, 'k>, res: UnwrappedResponse<'a>) {
-        let tungsten_req = Request::wrap_request(req);
+        let tungsten_req = Request::wrap_request(req, self.base_url.as_str());
         let tungsten_res = Response::wrap_response(res);
         self.router.serve(tungsten_req, tungsten_res);
     }
@@ -36,6 +37,7 @@ impl Tungsten {
             res.send(b"You are at /some/random/path");
         });
         let mut handler = RequestHandler {
+            base_url: host_port.to_string(),
             router: router
         };
         let server = Server::http(host_port)
