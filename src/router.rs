@@ -27,8 +27,7 @@ impl Router {
     }
 
     pub fn serve<'m, 'r>(&'m self, req: Request<'m, 'r>, res: Response<'m>) {
-        assert!(self.routes.len() > 0);
-        match self.match_route(req.method(), req.path().unwrap().to_string()) {
+        match self.match_route(req.method(), req.path().to_string()) {
             Some(route) => route.action.execute(req, res),
             None => panic!("Route not found.")
         };

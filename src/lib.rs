@@ -1,4 +1,5 @@
 extern crate hyper;
+extern crate url;
 
 pub mod server;
 pub mod response;
