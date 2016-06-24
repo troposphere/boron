@@ -63,7 +63,7 @@ impl Router {
 impl HttpMethods for Router {
     fn new_route<T: Middleware>(&mut self, method: Method, path: String, action: T) {
         let route = Route {
-            method: Method::Get,
+            method: method,
             path: path,
             action: Box::new(action)
         };
