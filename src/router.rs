@@ -10,7 +10,22 @@ struct Route {
 }
 
 pub trait HttpMethods {
-    fn get<T: Middleware>(&mut self, String, T);
+    fn new_route<T: Middleware>(&mut self, Method, String, T);
+    fn get<T: Middleware>(&mut self, path: String, action: T) {
+        self.new_route(Method::Get, path, action);
+    }
+
+    fn post<T: Middleware>(&mut self, path: String, action: T) {
+        self.new_route(Method::Post, path, action);
+    }
+
+    fn put<T: Middleware>(&mut self, path: String, action: T) {
+        self.new_route(Method::Put, path, action);
+    }
+
+    fn delete<T: Middleware>(&mut self, path: String, action: T) {
+        self.new_route(Method::Delete, path, action);
+    }
 }
 
 pub struct Router {
@@ -46,7 +61,7 @@ impl Router {
 }
 
 impl HttpMethods for Router {
-    fn get<T: Middleware>(&mut self, path: String, action: T) {
+    fn new_route<T: Middleware>(&mut self, method: Method, path: String, action: T) {
         let route = Route {
             method: Method::Get,
             path: path,
