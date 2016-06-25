@@ -1,3 +1,4 @@
+use hyper::method::Method;
 use hyper::server::{Handler, Server, Listening};
 use hyper::server::Request as UnwrappedRequest;
 use hyper::server::Response as UnwrappedResponse;
@@ -5,6 +6,7 @@ use url::Url;
 use request::Request;
 use response::Response;
 use router::{HttpMethods, Router};
+use middleware::Middleware;
 
 struct RequestHandler {
     base_url: Url,
@@ -20,30 +22,33 @@ impl Handler for RequestHandler {
 }
 
 pub struct Tungsten {
-    server: Option<Listening>
+    server: Option<Listening>,
+    router: Router
 }
 
 impl Tungsten {
     pub fn new() -> Tungsten {
-        Tungsten { server: None }
+        Tungsten {
+            server: None,
+            router: Router::new("".to_string())
+        }
     }
 
-    pub fn listen(&mut self, host_port: &str) {
-        let mut router = Router::new("/".to_string());
-        router.get("/".to_string(), |req: Request, res: Response| {
-            res.send(b"Hello World!");
-        });
-        router.get("/some/random/path".to_string(), |req: Request, res: Response| {
-            res.send(b"You are at /some/random/path");
-        });
+    pub fn listen(mut self, host_port: &str) {
         let handler = RequestHandler {
             base_url: Url::parse(format!("http://{}", host_port).as_str()).unwrap(),
-            router: router
+            router: self.router
         };
         let server = Server::http(host_port)
             .unwrap()
             .handle(handler)
             .unwrap();
         self.server = Some(server);
+    }
+}
+
+impl HttpMethods for Tungsten {
+    fn new_route<T: Middleware>(&mut self, method: Method, path: String, action: T) {
+        self.router.new_route(method, path, action);
     }
 }

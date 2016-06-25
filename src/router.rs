@@ -11,6 +11,7 @@ struct Route {
 
 pub trait HttpMethods {
     fn new_route<T: Middleware>(&mut self, Method, String, T);
+
     fn get<T: Middleware>(&mut self, path: String, action: T) {
         self.new_route(Method::Get, path, action);
     }
