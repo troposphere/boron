@@ -6,11 +6,20 @@ use std::io::Read;
 use hyper::status::StatusCode;
 use hyper::client::Client;
 use tungsten::server::Tungsten;
+use tungsten::request::Request;
+use tungsten::response::Response;
+use tungsten::router::HttpMethods;
 
 fn serve() {
   let _ = thread::Builder::new().name(String::from("test-server")).spawn(move || {
-    let mut server = Tungsten::new();
-    server.listen("0.0.0.0:4040");
+    let mut app = Tungsten::new();
+    app.get("/".to_string(), |req: Request, res: Response| {
+        res.send(b"Hello World!");
+    });
+    app.get("/some/random/path".to_string(), |req: Request, res: Response| {
+        res.send(b"You are at /some/random/path");
+    });
+    app.listen("0.0.0.0:4040");
   });
 }
 
