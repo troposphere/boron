@@ -20,6 +20,9 @@ struct TestContext {
 
 impl TestContext {
     fn new() ->  TestContext {
+        let ctx = TestContext {
+            req_client: Client::new()
+        };
         TEST_INIT.call_once(|| {
             let _ = thread::spawn(move || {
                 let mut app = Tungsten::new();
@@ -31,10 +34,13 @@ impl TestContext {
                 });
                 app.listen("0.0.0.0:4040");
             });
+            loop {
+                if ctx.req_client.get("http://0.0.0.0:4040").send().is_ok() {
+                    break;
+                }
+            }
         });
-        TestContext {
-            req_client: Client::new()
-        }
+        ctx
     }
 
     fn request(&self, url: &str) -> HyperResponse {
