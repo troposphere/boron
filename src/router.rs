@@ -1,30 +1,31 @@
 use middleware::Middleware;
 use request::Request;
 use response::Response;
+use matcher::Matcher;
 use hyper::method::Method;
 
 struct Route {
     method: Method,
-    path: String,
+    path: Matcher,
     action: Box<Middleware>
 }
 
 pub trait HttpMethods {
-    fn new_route<T: Middleware>(&mut self, Method, String, T);
+    fn new_route<T: Middleware>(&mut self, Method, &str, T);
 
-    fn get<T: Middleware>(&mut self, path: String, action: T) {
+    fn get<T: Middleware>(&mut self, path: &str, action: T) {
         self.new_route(Method::Get, path, action);
     }
 
-    fn post<T: Middleware>(&mut self, path: String, action: T) {
+    fn post<T: Middleware>(&mut self, path: &str, action: T) {
         self.new_route(Method::Post, path, action);
     }
 
-    fn put<T: Middleware>(&mut self, path: String, action: T) {
+    fn put<T: Middleware>(&mut self, path: &str, action: T) {
         self.new_route(Method::Put, path, action);
     }
 
-    fn delete<T: Middleware>(&mut self, path: String, action: T) {
+    fn delete<T: Middleware>(&mut self, path: &str, action: T) {
         self.new_route(Method::Delete, path, action);
     }
 }
@@ -43,16 +44,16 @@ impl Router {
     }
 
     pub fn serve<'m, 'r>(&'m self, req: Request<'m, 'r>, res: Response<'m>) {
-        match self.match_route(req.method(), req.path().to_string()) {
+        match self.match_route(req.method(), req.path()) {
             Some(route) => route.action.execute(req, res),
             None => panic!("Route not found.")
         };
     }
 
-    fn match_route(&self, method: &Method, path: String) -> Option<&Route> {
+    fn match_route(&self, method: &Method, path: &str) -> Option<&Route> {
         let mut matched_route = None;
         for route in self.routes.iter() {
-            if route.method == *method && route.path == path.to_string() {
+            if route.method == *method && route.path.is_match(path) {
                 matched_route = Some(route);
                 break;
             }
@@ -62,10 +63,10 @@ impl Router {
 }
 
 impl HttpMethods for Router {
-    fn new_route<T: Middleware>(&mut self, method: Method, path: String, action: T) {
+    fn new_route<T: Middleware>(&mut self, method: Method, path: &str, action: T) {
         let route = Route {
             method: method,
-            path: path,
+            path: Matcher::new(path),
             action: Box::new(action)
         };
         self.routes.push(route);
