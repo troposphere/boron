@@ -15,20 +15,20 @@ struct RequestHandler {
 
 impl Handler for RequestHandler {
     fn handle<'a, 'k>(&'a self, req: UnwrappedRequest<'a, 'k>, res: UnwrappedResponse<'a>) {
-        let tungsten_req = Request::wrap_request(req, &self.base_url);
-        let tungsten_res = Response::wrap_response(res);
-        self.router.serve(tungsten_req, tungsten_res);
+        let boron_req = Request::wrap_request(req, &self.base_url);
+        let boron_res = Response::wrap_response(res);
+        self.router.serve(boron_req, boron_res);
     }
 }
 
-pub struct Tungsten {
+pub struct Boron {
     server: Option<Listening>,
     router: Router
 }
 
-impl Tungsten {
-    pub fn new() -> Tungsten {
-        Tungsten {
+impl Boron {
+    pub fn new() -> Boron {
+        Boron {
             server: None,
             router: Router::new("".to_string())
         }
@@ -47,7 +47,7 @@ impl Tungsten {
     }
 }
 
-impl HttpMethods for Tungsten {
+impl HttpMethods for Boron {
     fn new_route<T: Middleware>(&mut self, method: Method, path: String, action: T) {
         self.router.new_route(method, path, action);
     }
