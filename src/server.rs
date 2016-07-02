@@ -48,7 +48,7 @@ impl Tungsten {
 }
 
 impl HttpMethods for Tungsten {
-    fn new_route<T: Middleware>(&mut self, method: Method, path: String, action: T) {
+    fn new_route<T: Middleware>(&mut self, method: Method, path: &str, action: T) {
         self.router.new_route(method, path, action);
     }
 }

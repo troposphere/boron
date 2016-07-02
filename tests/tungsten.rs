@@ -26,17 +26,20 @@ impl TestContext {
         TEST_INIT.call_once(|| {
             let _ = thread::spawn(move || {
                 let mut app = Tungsten::new();
-                app.get("/".to_string(), |req: Request, res: Response| {
+                app.get("/", |req: Request, res: Response| {
                     res.send(b"Hello World!");
                 });
-                app.get("/some/random/path".to_string(), |req: Request, res: Response| {
+                app.get("/some/random/path", |req: Request, res: Response| {
                     res.send(b"You are at /some/random/path");
                 });
-                app.get("/throw/error".to_string(), |req: Request, mut res: Response| {
+                app.get("/throw/error", |req: Request, mut res: Response| {
                     *res.status_mut() = StatusCode::InternalServerError;
                     let mut started_res = res.start().unwrap();
                     started_res.write(b"Boom!");
                     started_res.end();
+                });
+                app.get(r"/some/[:alpha:]+/pattern", |req: Request, res: Response| {
+                    res.send(b"I was triggered");
                 });
                 app.listen("0.0.0.0:4040");
             });
@@ -88,4 +91,14 @@ fn test_res_methods() {
 
     assert_eq!(res.status, StatusCode::InternalServerError);
     assert_eq!(body, "Boom!");
+}
+
+#[test]
+fn test_pattern_match() {
+    let ctx = TestContext::new();
+    let mut res = ctx.request("http://0.0.0.0:4040/some/random/pattern");
+    let body = ctx.body_from_response(&mut res);
+
+    assert_eq!(res.status, StatusCode::Ok);
+    assert_eq!(body, "I was triggered");
 }

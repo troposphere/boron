@@ -1,6 +1,6 @@
 use regex::{Captures, Regex};
 
-struct Matcher {
+pub struct Matcher {
     pattern: Regex
 }
 
