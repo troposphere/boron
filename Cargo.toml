@@ -1,9 +1,9 @@
 [package]
-name = "tungsten"
+name = "boron"
 version = "0.0.1"
 description = "web framwork made with <3"
 readme = "README.md"
-repository = "https://github.com/troposphere/tungsten"
+repository = "https://github.com/troposphere/boron"
 license = "MIT"
 authors = [
     "Sankha Narayan Guria <sankha93@gmail.com>",
@@ -11,7 +11,7 @@ authors = [
 ]
 
 [lib]
-name = "tungsten"
+name = "boron"
 path = "src/lib.rs"
 test = true
 

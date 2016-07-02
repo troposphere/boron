@@ -1,5 +1,5 @@
 extern crate hyper;
-extern crate tungsten;
+extern crate boron;
 
 use std::thread;
 use std::sync::{Once, ONCE_INIT};
@@ -7,10 +7,10 @@ use std::io::{Read, Write};
 use hyper::status::StatusCode;
 use hyper::client::Client;
 use hyper::client::response::Response as HyperResponse;
-use tungsten::server::Tungsten;
-use tungsten::request::Request;
-use tungsten::response::Response;
-use tungsten::router::HttpMethods;
+use boron::server::Boron;
+use boron::request::Request;
+use boron::response::Response;
+use boron::router::HttpMethods;
 
 static TEST_INIT: Once = ONCE_INIT;
 
@@ -25,7 +25,7 @@ impl TestContext {
         };
         TEST_INIT.call_once(|| {
             let _ = thread::spawn(move || {
-                let mut app = Tungsten::new();
+                let mut app = Boron::new();
                 app.get("/", |req: Request, res: Response| {
                     res.send(b"Hello World!");
                 });
