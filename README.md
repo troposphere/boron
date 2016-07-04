@@ -18,7 +18,7 @@ use boron::router::HttpMethods;
 
 fn main() {
     let mut app = Boron::new();
-    app.get("/".to_string(), |req: Request, res: Response| {
+    app.get("/", |req: Request, res: Response| {
         res.send(b"Hello World! I am Boron.");
     });
     app.listen("localhost:3000");
@@ -28,7 +28,7 @@ fn main() {
 Add the following line to your `[dependencies]` section in `Cargo.toml`:
 
 ```
-boron = "0.0.1"
+boron = "0.0.2"
 ```
 
 ## Contributing
@@ -40,3 +40,4 @@ Fork the repo, start hacking away and send us your pull requests. We maintain a 
 ## License
 
 MIT
+
