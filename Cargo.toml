@@ -1,6 +1,6 @@
 [package]
 name = "boron"
-version = "0.0.1"
+version = "0.0.2"
 description = "web framwork made with <3"
 readme = "README.md"
 repository = "https://github.com/troposphere/boron"
