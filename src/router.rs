@@ -28,6 +28,10 @@ pub trait HttpMethods {
     fn delete<T: Middleware>(&mut self, path: &str, action: T) {
         self.new_route(Method::Delete, path, action);
     }
+
+    fn utilize<T: Middleware>(&mut self, path: &str, action: T) {
+        self.new_route(Method::Extension("BoronMiddleware".to_string()), path, action);
+    }
 }
 
 pub struct Router {
@@ -45,20 +49,35 @@ impl Router {
 
     pub fn serve<'m, 'r>(&'m self, req: Request<'m, 'r>, res: Response<'m>) {
         match self.match_route(req.method(), req.path()) {
-            Some(route) => route.action.execute(req, res),
+            Some(routes) => {
+                for handler in routes {
+                    handler.action.execute(req, res);
+                }
+            },
             None => panic!("Route not found.")
         };
     }
 
-    fn match_route(&self, method: &Method, path: &str) -> Option<&Route> {
-        let mut matched_route = None;
+    fn match_route(&self, method: &Method, path: &str) -> Option<Vec<&Route>> {
+        let mut matched_routes: Vec<&Route> = vec![];
+        let mut url_handler: Option<&Route> = None;
+
         for route in self.routes.iter() {
-            if route.method == *method && route.path.is_match(path) {
-                matched_route = Some(route);
-                break;
+            if route.path.is_match(path) {
+                if route.method == *method {
+                    url_handler = Some(route);
+                } else if route.method == Method::Extension("BoronMiddleware".to_string()) {
+                    matched_routes.push(route);
+                }
             }
         }
-        matched_route
+        match url_handler {
+            Some(handler) => {
+                matched_routes.push(handler);
+                Some(matched_routes)
+            },
+            None => None,
+        }
     }
 }
 
