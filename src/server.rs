@@ -1,19 +1,19 @@
 use hyper::method::Method;
-use hyper::server::{Handler, Server, Listening};
+use hyper::server::{Handler as HyperHandler, Server, Listening};
 use hyper::server::Request as UnwrappedRequest;
 use hyper::server::Response as UnwrappedResponse;
 use url::Url;
 use request::Request;
 use response::Response;
 use router::{HttpMethods, Router};
-use middleware::Middleware;
+use middleware::*;
 
 struct RequestHandler {
     base_url: Url,
     router: Router
 }
 
-impl Handler for RequestHandler {
+impl HyperHandler for RequestHandler {
     fn handle<'a, 'k>(&'a self, req: UnwrappedRequest<'a, 'k>, res: UnwrappedResponse<'a>) {
         let boron_req = Request::wrap_request(req, &self.base_url);
         let boron_res = Response::wrap_response(res);
@@ -48,7 +48,15 @@ impl Boron {
 }
 
 impl HttpMethods for Boron {
-    fn new_route<T: Middleware>(&mut self, method: Method, path: &str, action: T) {
+    fn new_route<T: Handler>(&mut self, method: Method, path: &str, action: T) {
         self.router.new_route(method, path, action);
+    }
+
+    fn use_before<T: BeforeMiddleware>(&mut self, path: &str, action: T) {
+        self.router.use_before(path, action);
+    }
+
+    fn use_after<T: AfterMiddleware>(&mut self, path: &str, action: T) {
+        self.router.use_after(path, action);
     }
 }
