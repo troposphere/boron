@@ -27,19 +27,19 @@ impl TestContext {
             let _ = thread::spawn(move || {
                 let mut app = Boron::new();
                 app.get("/", |req: &Request, res: Response| {
-                    res.send(b"Hello World!");
+                    res.send(b"Hello World!")
                 });
                 app.get("/some/random/path", |req: &Request, res: Response| {
-                    res.send(b"You are at /some/random/path");
+                    res.send(b"You are at /some/random/path")
                 });
                 app.get("/throw/error", |req: &Request, mut res: Response| {
                     *res.status_mut() = StatusCode::InternalServerError;
                     let mut started_res = res.start().unwrap();
                     started_res.write(b"Boom!");
-                    started_res.end();
+                    started_res.end()
                 });
                 app.get(r"/some/[:alpha:]+/pattern", |req: &Request, res: Response| {
-                    res.send(b"I was triggered");
+                    res.send(b"I was triggered")
                 });
                 app.listen("0.0.0.0:4040");
             });

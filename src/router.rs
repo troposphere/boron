@@ -68,9 +68,9 @@ impl Router {
                 for middleware in before_middlewares {
                     middleware.action.execute(&req);
                 }
-                handler.action.execute(&req, res);
+                let shadow_res = handler.action.execute(&req, res).unwrap();
                 for middleware in after_middlewares {
-                    middleware.action.execute(&req);
+                    middleware.action.execute(&req, &shadow_res);
                 }
             },
             None => panic!("Route not found.")

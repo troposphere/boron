@@ -9,7 +9,10 @@ pub struct Response<'a, T: Any = Fresh> {
     res: UnwrappedResponse<'a, T>
 }
 
-pub struct ShadowResponse;
+pub struct ShadowResponse {
+    pub status: StatusCode,
+    pub headers: Headers
+}
 
 impl<'a> Response<'a, Fresh> {
     pub fn wrap_response<'b>(res: UnwrappedResponse<'b, Fresh>) -> Response<'b, Fresh> {
@@ -27,8 +30,16 @@ impl<'a> Response<'a, Fresh> {
     }
 
     #[inline]
-    pub fn send(self, body: &[u8]) -> io::Result<()> {
-        self.res.send(body)
+    pub fn send(self, body: &[u8]) -> io::Result<ShadowResponse> {
+        let shadow_res = ShadowResponse {
+            status: self.res.status().clone(),
+            headers: self.res.headers().clone()
+        };
+
+        match self.res.send(body) {
+            Ok(()) => Ok(shadow_res),
+            Err(e) => Err(e)
+        }
     }
 
     #[inline]
@@ -42,8 +53,16 @@ impl<'a> Response<'a, Fresh> {
 
 impl<'a> Response<'a, Streaming> {
     #[inline]
-    pub fn end(self) -> io::Result<()> {
-        self.res.end()
+    pub fn end(self) -> io::Result<ShadowResponse> {
+        let shadow_res = ShadowResponse {
+            status: self.res.status().clone(),
+            headers: self.res.headers().clone()
+        };
+
+        match self.res.end() {
+            Ok(()) => Ok(shadow_res),
+            Err(e) => Err(e)
+        }
     }
 }
 
