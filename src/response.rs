@@ -9,6 +9,8 @@ pub struct Response<'a, T: Any = Fresh> {
     res: UnwrappedResponse<'a, T>
 }
 
+pub struct ShadowResponse;
+
 impl<'a> Response<'a, Fresh> {
     pub fn wrap_response<'b>(res: UnwrappedResponse<'b, Fresh>) -> Response<'b, Fresh> {
         Response { res: res }
