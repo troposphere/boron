@@ -19,3 +19,5 @@ test = true
 hyper = "0.9"
 url = "1.1.1"
 regex = "0.1"
+typemap = "0.3.3"
+

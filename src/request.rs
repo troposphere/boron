@@ -6,10 +6,12 @@ use hyper::uri::RequestUri::AbsolutePath;
 use hyper::method::Method;
 use hyper::header::Headers;
 use url::{Url, ParseError};
+use typemap::TypeMap;
 
 pub struct Request<'a, 'b: 'a> {
     pub req: UnwrappedRequest<'a, 'b>,
-    parsed_url: Url
+    parsed_url: Url,
+    pub extensions: TypeMap
 }
 
 impl<'a, 'b> Request<'a, 'b> {
@@ -20,7 +22,8 @@ impl<'a, 'b> Request<'a, 'b> {
         };
         Request {
             req: req,
-            parsed_url: request_url.unwrap()
+            parsed_url: request_url.unwrap(),
+            extensions: TypeMap::new()
         }
     }
 
