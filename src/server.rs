@@ -1,3 +1,5 @@
+//! Boron app server methods and utilities
+
 use hyper::method::Method;
 use hyper::server::{Handler as HyperHandler, Server, Listening};
 use hyper::server::Request as UnwrappedRequest;
@@ -21,12 +23,27 @@ impl HyperHandler for RequestHandler {
     }
 }
 
+/// This acts as the central application object and is the starting point for a Boron application.
+/// Once instantiated it can be used to add different URL matching routes and middleware logic for
+/// your app.
 pub struct Boron {
     server: Option<Listening>,
     router: Router
 }
 
 impl Boron {
+
+    /// Creates a new Boron object.
+    ///
+    /// Generally it is created in the `main` function of your program liken this:
+    ///
+    /// ```
+    /// use boron::server::Boron;
+    ///
+    /// fn main() {
+    ///     let mut app = Boron::new();
+    /// }
+    /// ```
     pub fn new() -> Boron {
         Boron {
             server: None,
@@ -34,6 +51,8 @@ impl Boron {
         }
     }
 
+    /// Starts the application server on a specified host port. The host and port are passed as a
+    /// string in a manner similar to `localhost:4000`.
     pub fn listen(mut self, host_port: &str) {
         let handler = RequestHandler {
             base_url: Url::parse(format!("http://{}", host_port).as_str()).unwrap(),

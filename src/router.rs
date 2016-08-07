@@ -1,3 +1,5 @@
+//! Router logic to dispatch requests
+
 use middleware::*;
 use request::Request;
 use response::Response;
