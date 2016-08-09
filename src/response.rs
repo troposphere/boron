@@ -1,3 +1,5 @@
+//! HTTP response representation in Boron
+
 use std::io::{self, Write};
 use std::any::Any;
 use hyper::net::{Fresh, Streaming};

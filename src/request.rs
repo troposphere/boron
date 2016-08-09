@@ -1,3 +1,5 @@
+//! HTTP request representation in Boron
+
 use std::io::{self, Read};
 use std::net::SocketAddr;
 use std::time::Duration;
