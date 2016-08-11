@@ -13,6 +13,7 @@ use typemap::TypeMap;
 pub struct Request<'a, 'b: 'a> {
     pub req: UnwrappedRequest<'a, 'b>,
     parsed_url: Url,
+    pub url_tokens: Vec<(String, String)>,
     pub extensions: TypeMap
 }
 
@@ -25,8 +26,18 @@ impl<'a, 'b> Request<'a, 'b> {
         Request {
             req: req,
             parsed_url: request_url.unwrap(),
+            url_tokens: vec![],
             extensions: TypeMap::new()
         }
+    }
+
+    pub fn url_param(&self, key: &str) -> Option<&str> {
+        for token in &self.url_tokens {
+            if token.0 == key {
+                return Some(token.1.as_str());
+            }
+        }
+        None
     }
 
     #[inline]

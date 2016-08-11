@@ -63,10 +63,11 @@ impl Router {
         }
     }
 
-    pub fn serve<'m, 'r>(&'m self, req: Request<'m, 'r>, res: Response<'m>) {
+    pub fn serve<'m, 'r>(&'m self, mut req: Request<'m, 'r>, res: Response<'m>) {
         match self.match_route(req.method(), req.path()) {
             Some(routes) => {
-                let (before_middlewares, handler, after_middlewares) = routes;
+                let (url_tokens, before_middlewares, handler, after_middlewares) = routes;
+                req.url_tokens = url_tokens;
                 for middleware in before_middlewares {
                     middleware.action.execute(&req);
                 }
@@ -79,7 +80,8 @@ impl Router {
         };
     }
 
-    fn match_route(&self, method: &Method, path: &str) -> Option<(Vec<&BeforeRoute>, &Route, Vec<&AfterRoute>)> {
+    fn match_route(&self, method: &Method, path: &str) -> Option<(Vec<(String, String)>, Vec<&BeforeRoute>, &Route, Vec<&AfterRoute>)> {
+        let mut matched_tokens: Vec<(String, String)> = vec![];
         let mut before_middlewares: Vec<&BeforeRoute> = vec![];
         let mut url_handler: Option<&Route> = None;
         let mut after_middlewares: Vec<&AfterRoute> = vec![];
@@ -87,6 +89,7 @@ impl Router {
         for route in self.handlers.iter() {
             if route.path.is_match(path) && route.method == *method {
                 url_handler = Some(route);
+                matched_tokens = route.path.matched_tokens(path);
             }
         }
 
@@ -103,7 +106,7 @@ impl Router {
                 }
             }
 
-            Some((before_middlewares, url_handler.unwrap(), after_middlewares))
+            Some((matched_tokens, before_middlewares, url_handler.unwrap(), after_middlewares))
         } else {
             None
         }
