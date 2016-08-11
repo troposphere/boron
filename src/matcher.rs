@@ -1,4 +1,4 @@
-use regex::{Captures, Regex};
+use regex::Regex;
 
 pub struct Matcher {
     pattern: Regex
@@ -13,9 +13,17 @@ impl Matcher {
         self.pattern.is_match(text)
     }
 
-    pub fn matched<'t>(&self, text: &'t str) -> Captures<'t> {
-        assert!(self.is_match(text));
-        self.pattern.captures(text).unwrap()
+    pub fn matched_tokens(&self, text: &str) -> Vec<(String, String)> {
+        match self.pattern.captures(text) {
+            Some(captures) => {
+                let mut tokens = vec![];
+                for token in captures.iter_named() {
+                    tokens.push((token.0.to_string(), token.1.unwrap().to_string()));
+                }
+                tokens
+            },
+            None => vec![]
+        }
     }
 }
 
@@ -52,13 +60,12 @@ fn test_url_pattern_match_typesafe() {
 }
 
 #[test]
-fn test_matched_groups() {
+fn test_matched_groups_without_name() {
     let m = Matcher::new(r"/api/(\d{1})/user/(\d*)");
     let test_path = "/api/1/user/32571";
     assert!(m.is_match(test_path));
-    let caps = m.matched(test_path);
-    assert_eq!(caps.at(1), Some("1"));
-    assert_eq!(caps.at(2), Some("32571"));
+    let tokens = m.matched_tokens(test_path);
+    assert_eq!(tokens.len(), 0);
 }
 
 #[test]
@@ -66,7 +73,7 @@ fn test_matched_groups_name() {
     let m = Matcher::new(r"/api/(?P<version>\d{1})/user/(?P<id>\d*)");
     let test_path = "/api/1/user/32571";
     assert!(m.is_match(test_path));
-    let caps = m.matched(test_path);
-    assert_eq!(caps.name("version"), Some("1"));
-    assert_eq!(caps.name("id"), Some("32571"));
+    let tokens = m.matched_tokens(test_path);
+    assert!(tokens.contains(&("version".to_string(), "1".to_string())));
+    assert!(tokens.contains(&("id".to_string(), "32571".to_string())));
 }
