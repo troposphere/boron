@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <title>Boron - A web framework made with ❤️</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <div class="logo">
+        <h1>Boron</h1>
+      </div>
+      <p>Boron is a small and expressive web framework for Rust which aims to give a robust foundation for web applications and APIs.</p>
+
+      <section>
+        <h3>Installation</h3>
+        <p>
+          Boron is available via Cargo. You can use it by adding it to the dependencies section of <span class="inline-code">Cargo.toml</span>.
+        </p>
+      </section>
+
+      <section>
+        <h3>Example</h3>
+        <p>Lets take a simple code snippet which will raise an exception.</p>
+
+        <code class="text-center">var test = a + 1; <span class="code-comment">//a is not defined</span></code>
+        <hr>
+        <p>
+          Instead of javascript throwing <span class="inline-code">Uncaught ReferenceError: a is not defined</span>, using logerr will output something like
+        </p>
+        <code><div class="logerr-output"><span>Type</span>: <span class="color-red">error</span>
+<span>Error</span>: <span class="color-red">Uncaught ReferenceError: a is not defined</span>
+<span>StackTrace:</span> <span class="color-red">ReferenceError: a is not defined at http://localhost:8888/logerr/logerr.min.js:3:12</span>
+<span>File Name</span>: <span>logerr.js</span>
+<span>Path</span>: <span>http://localhost:8888/logerr/logerr.js</span>
+<span>Line</span>: <span>51</span>
+<span>Column</span>: <span>12</span>
+<span>Date</span>: <span>Tue Jun 28 2016 19:51:22 GMT+0530 (IST)</span>
+<span>Debug</span>: <span>http://localhost:8888/logerr/logerr.js:51</span>
+<span>Get Help</span>: <span class="color-blue">https://stackoverflow.com/search?q=Uncaught+ReferenceError:+a+is+not+defined</span>
+</div></code>
+      </section>
+
+      <hr>
+
+      <section>
+        <h3>Install</h3>
+        <p>Just include <span class="inline-code">logerr.js</span> file in the <span class="inline-code">&lt;head&gt;</span> section of your page, before you include any other JavaScript.
+        To initialize logerr, use <span class="inline-code">Logerr.init()</span></p>
+
+        <code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;script src=&quot;<span class="inline-code">logerr.js</span>&quot;&gt;&lt;/script&gt;
+    &lt;script&gt;
+      <span class="inline-code">Logerr.init();</span>
+    &lt;/script&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    Am fancy
+  &lt;/body&gt;
+&lt;/html&gt;</code>
+      </section>
+
+      <hr>
+
+      <section>
+        <h3>Enable Remote Logging</h3>
+        <blockquote>Make sure you have CORS enabled if logging cross-domain.</blockquote>
+<code>Logerr.init({
+  remoteLogging: true,
+  remoteSettings: {
+    url: 'REMOTE_URL',
+    additionalParams: {
+      logged_by: 'Sam'
+    },
+    successCallback: function () {
+      console.log('Im logged.');
+    },
+    errorCallback: function () {
+      console.log('Err! Something went wrong.');
+    }
+  }
+});
+</code>
+      </section>
+
+      <hr>
+
+      <section>
+        <h3>Default Configuration &amp; Datatypes</h3>
+
+<code>detailedErrors: true          <span class="code-comment">//Boolean true/false, Optional</span>
+remoteLogging: false          <span class="code-comment">//Boolean true/false, Optional</span>
+remoteSettings: {             <span class="code-comment">//Object {}, required if remoteLogging is set to true</span>
+  url: null,                  <span class="code-comment">//String '', required if remoteLogging is set to true</span>
+  additionalParams: null,     <span class="code-comment">//Object {}, optional</span>
+  successCallback: null,      <span class="code-comment">//function() {}, optional</span>
+  errorCallback: null         <span class="code-comment">//function() {}, optional</span>
+}</code>
+      </section>
+    </div>
+  </body>
+</html>
