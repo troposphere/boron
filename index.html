@@ -5,6 +5,9 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <title>Boron - A web framework made with ❤️</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.6.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
   </head>
 
   <body>
@@ -19,88 +22,100 @@
         <p>
           Boron is available via Cargo. You can use it by adding it to the dependencies section of <span class="inline-code">Cargo.toml</span>.
         </p>
+        <pre>
+        <code class="rust">
+[dependencies]
+boron = "0.0.2"
+        </code>
+        </pre>
+
+        <p>To include the latest (maybe unreleased) version, add the git repository.</p>
+
+        <pre>
+        <code class="rust">
+[dependencies]
+boron = { git = "https://github.com/troposphere/boron.git" }
+        </code>
+        </pre>
       </section>
 
       <section>
         <h3>Example</h3>
-        <p>Lets take a simple code snippet which will raise an exception.</p>
+        <p>Create your first app.</p>
+        <pre>
+        <code class="rust">
+extern crate boron;
 
-        <code class="text-center">var test = a + 1; <span class="code-comment">//a is not defined</span></code>
-        <hr>
-        <p>
-          Instead of javascript throwing <span class="inline-code">Uncaught ReferenceError: a is not defined</span>, using logerr will output something like
-        </p>
-        <code><div class="logerr-output"><span>Type</span>: <span class="color-red">error</span>
-<span>Error</span>: <span class="color-red">Uncaught ReferenceError: a is not defined</span>
-<span>StackTrace:</span> <span class="color-red">ReferenceError: a is not defined at http://localhost:8888/logerr/logerr.min.js:3:12</span>
-<span>File Name</span>: <span>logerr.js</span>
-<span>Path</span>: <span>http://localhost:8888/logerr/logerr.js</span>
-<span>Line</span>: <span>51</span>
-<span>Column</span>: <span>12</span>
-<span>Date</span>: <span>Tue Jun 28 2016 19:51:22 GMT+0530 (IST)</span>
-<span>Debug</span>: <span>http://localhost:8888/logerr/logerr.js:51</span>
-<span>Get Help</span>: <span class="color-blue">https://stackoverflow.com/search?q=Uncaught+ReferenceError:+a+is+not+defined</span>
-</div></code>
+use boron::server::Boron;
+use boron::request::Request;
+use boron::response::Response;
+use boron::router::HttpMethods;
+
+fn main() {
+    let mut app = Boron::new();
+    app.get("/", |req: &amp;Request, res: Response| {
+        res.send(b"Hello World! I am Boron.")
+    });
+    app.listen("localhost:3000");
+}
+        </code>
+        </pre>
       </section>
 
       <hr>
 
       <section>
-        <h3>Install</h3>
-        <p>Just include <span class="inline-code">logerr.js</span> file in the <span class="inline-code">&lt;head&gt;</span> section of your page, before you include any other JavaScript.
-        To initialize logerr, use <span class="inline-code">Logerr.init()</span></p>
+        <h3>Adding routes</h3>
+        
+        <p>Boron provides support for adding routes with parameters and captures.</p>
+        <br>
+        <ul>
+          <li>The first route is a simple route that matches the URL
+            <span class="inline-code">/hello</span>. The app now sends the response
+            <span class="inline-code">"Hello World! I am Boron."</span> on navigating to the url
+            <span class="inline-code">localhost:3000/hello</span>
+          </li>
+          <li>The second route shows an example where we capture a username.
+            The app now sends the response
+            <span class="inline-code">"Hello &lt;username&gt;!"</span> on navigating to the url
+            <span class="inline-code">localhost:3000/user/&lt;username&gt;</span>
+            where &lt;username&gt; can be any string.
+          </li>
+        </ul>
 
-        <code>&lt;!DOCTYPE html&gt;
-&lt;html lang=&quot;en&quot;&gt;
-  &lt;head&gt;
-    &lt;script src=&quot;<span class="inline-code">logerr.js</span>&quot;&gt;&lt;/script&gt;
-    &lt;script&gt;
-      <span class="inline-code">Logerr.init();</span>
-    &lt;/script&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
-    Am fancy
-  &lt;/body&gt;
-&lt;/html&gt;</code>
+        <pre>
+        <code class="rust">
+extern crate boron;
+use boron::server::Boron;
+use boron::request::Request;
+use boron::response::Response;
+use boron::router::HttpMethods;
+
+fn main() {
+    let mut app = Boron::new();
+
+    // adding a simple route
+    // this enables boron to match all request to the URL
+    // /hello and respond with the mentioned text
+    app.get("/hello", |req: &amp;Request, res: Response| {
+        res.send(b"Hello World! I am Boron.")
+    });
+
+    // adding a route with parameters
+    // this enables boron to capture the string &lt;username&gt;
+    // in URLs of the form /user/&lt;username&gt;
+    app.get(r"/user/(?P<username>\w+)", |req: &amp;Request, res: Response| {
+        let value = req.url_param("username").unwrap();
+        res.send(format!("Hello {}!", value).as_bytes())
+    });
+    app.listen("0.0.0.0:3000");
+}
+        </code>
+        </pre>
       </section>
 
       <hr>
-
-      <section>
-        <h3>Enable Remote Logging</h3>
-        <blockquote>Make sure you have CORS enabled if logging cross-domain.</blockquote>
-<code>Logerr.init({
-  remoteLogging: true,
-  remoteSettings: {
-    url: 'REMOTE_URL',
-    additionalParams: {
-      logged_by: 'Sam'
-    },
-    successCallback: function () {
-      console.log('Im logged.');
-    },
-    errorCallback: function () {
-      console.log('Err! Something went wrong.');
-    }
-  }
-});
-</code>
-      </section>
-
-      <hr>
-
-      <section>
-        <h3>Default Configuration &amp; Datatypes</h3>
-
-<code>detailedErrors: true          <span class="code-comment">//Boolean true/false, Optional</span>
-remoteLogging: false          <span class="code-comment">//Boolean true/false, Optional</span>
-remoteSettings: {             <span class="code-comment">//Object {}, required if remoteLogging is set to true</span>
-  url: null,                  <span class="code-comment">//String '', required if remoteLogging is set to true</span>
-  additionalParams: null,     <span class="code-comment">//Object {}, optional</span>
-  successCallback: null,      <span class="code-comment">//function() {}, optional</span>
-  errorCallback: null         <span class="code-comment">//function() {}, optional</span>
-}</code>
-      </section>
+      
     </div>
   </body>
 </html>
