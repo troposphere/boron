@@ -104,7 +104,7 @@ fn main() {
     // adding a route with parameters
     // this enables boron to capture the string &lt;username&gt;
     // in URLs of the form /user/&lt;username&gt;
-    app.get(r"/user/(?P<username>\w+)", |req: &amp;Request, res: Response| {
+    app.get(r"/user/(?P&lt;username&gt;\w+)", |req: &amp;Request, res: Response| {
         let value = req.url_param("username").unwrap();
         res.send(format!("Hello {}!", value).as_bytes())
     });
@@ -115,7 +115,7 @@ fn main() {
       </section>
 
       <hr>
-      
+
     </div>
   </body>
 </html>
