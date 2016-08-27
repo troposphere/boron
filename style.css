@@ -1,6 +1,7 @@
-@import url(https://fonts.googleapis.com/css?family=Droid+Sans+Mono);
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,600);
-@import url(https://fonts.googleapis.com/css?family=Roboto+Slab);
+@import 'https://fonts.googleapis.com/css?family=Droid+Sans+Mono';
+@import 'https://fonts.googleapis.com/css?family=Open+Sans:300,400,600';
+@import 'https://fonts.googleapis.com/css?family=Roboto+Slab';
+
 * {
   margin: 0;
   padding: 0;
@@ -19,11 +20,6 @@ body {
 
 h1, h2, h3 {
   text-align: center;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
 }
 
 p {
@@ -50,6 +46,15 @@ h3 {
   padding: 0 40px;
 }
 
+.o-list {
+  margin-top: 20px;
+  margin-left: 20px;
+}
+
+.o-list li {
+  margin-bottom: 20px;
+}
+
 code,
 .inline-code {
   font-family: Droid Sans Mono;
@@ -70,111 +75,30 @@ code {
   white-space: pre;
   text-align: left;
 }
+
 code .inline-code {
   padding: 0;
 }
+
 code .code-comment {
   color: #aaa;
 }
+
 code strong {
   color: #777;
 }
 
 .logo h1 {
-  font-family: "Roboto Slab";
+  font-family: Roboto Slab;
   font-size: 80px;
   color: #e74c3c;
   font-weight: 400;
   padding: 80px;
 }
-.logo span {
-  color: #515151;
-  font-size: 70px;
-}
 
 section {
   margin-top: 60px;
   margin-bottom: 40px;
-}
-
-.ejs-output {
-  font-size: 12px;
-  color: #777;
-}
-.ejs-output span {
-  font-weight: 600;
-  color: #515151;
-}
-.ejs-output .color-red {
-  color: #e74c3c;
-}
-.ejs-output .color-blue {
-  color: #3498db;
-}
-
-blockquote {
-  font-family: Open Sans;
-  padding: 10px;
-  margin: 0;
-  background-color: #eee;
-  text-align: left;
-  margin-top: 20px;
-  border-left: 5px solid #e5e5e5;
-}
-
-.special-comment {
-  font-size: 12px;
-  text-align: left;
-  display: block;
-  padding-left: 20px;
-}
-
-hr {
-  margin: 60px;
-  border: 0;
-  border-bottom: 1px solid #ddd;
-}
-
-.view-on-github {
-  padding: 5px 10px;
-  font-size: 12px;
-  float: right;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  color: #818181;
-}
-.view-on-github img {
-  position: relative;
-  top: -2px;
-  margin-right: 2px;
-  vertical-align: middle;
-  max-width: 16px;
-}
-.view-on-github:hover {
-  border-color: transparent;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.logerr-output span:nth-child(odd) {
-  color: #313131;
-  font-weight: bold;
-}
-
-.top-nav {
-  margin: 40px 0;
-  margin-bottom: 0;
-  list-style-type: none;
-}
-.top-nav li {
-  display: inline-block;
-  float: right;
-}
-.top-nav iframe {
-  margin-top: 7px;
-  width: 120px;
 }
 
 @media all and (max-width: 512px) {
