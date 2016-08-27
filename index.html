@@ -23,28 +23,22 @@
           Boron is available via Cargo. You can use it by adding it to the dependencies section of <span class="inline-code">Cargo.toml</span>.
         </p>
         <pre>
-        <code class="rust">
-[dependencies]
-boron = "*"
-        </code>
+        <code class="rust">[dependencies]
+boron = "*"</code>
         </pre>
 
         <p>To include the latest (maybe unreleased) version, add the git repository.</p>
 
         <pre>
-        <code class="rust">
-[dependencies]
-boron = { git = "https://github.com/troposphere/boron.git" }
-        </code>
+        <code class="rust">[dependencies]
+boron = { git = "https://github.com/troposphere/boron.git" }</code>
         </pre>
       </section>
 
       <section>
-        <h3>Example</h3>
-        <p>Create your first app.</p>
+        <h3>Create your first app.</h3>
         <pre>
-        <code class="rust">
-extern crate boron;
+        <code class="rust">extern crate boron;
 
 use boron::server::Boron;
 use boron::request::Request;
@@ -57,19 +51,15 @@ fn main() {
         res.send(b"Hello World! I am Boron.")
     });
     app.listen("localhost:3000");
-}
-        </code>
+}</code>
         </pre>
       </section>
-
-      <hr>
-
       <section>
         <h3>Adding routes</h3>
         
         <p>Boron provides support for adding routes with parameters and captures.</p>
-        <br>
-        <ul>
+        
+        <ul class="o-list">
           <li>The first route is a simple route that matches the URL
             <span class="inline-code">/hello</span>. The app now sends the response
             <span class="inline-code">"Hello World! I am Boron."</span> on navigating to the url
@@ -84,8 +74,7 @@ fn main() {
         </ul>
 
         <pre>
-        <code class="rust">
-extern crate boron;
+        <code class="rust">extern crate boron;
 use boron::server::Boron;
 use boron::request::Request;
 use boron::response::Response;
@@ -109,13 +98,9 @@ fn main() {
         res.send(format!("Hello {}!", value).as_bytes())
     });
     app.listen("0.0.0.0:3000");
-}
-        </code>
+}</code>
         </pre>
       </section>
-
-      <hr>
-
     </div>
   </body>
 </html>
