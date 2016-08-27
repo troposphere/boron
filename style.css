@@ -1,6 +1,6 @@
 @import 'https://fonts.googleapis.com/css?family=Droid+Sans+Mono';
 @import 'https://fonts.googleapis.com/css?family=Open+Sans:300,400,600';
-@import 'https://fonts.googleapis.com/css?family=Kaushan+Script';
+@import 'https://fonts.googleapis.com/css?family=Roboto+Slab';
 
 * {
   margin: 0;
@@ -89,7 +89,7 @@ code strong {
 }
 
 .logo h1 {
-  font-family: Kaushan Script;
+  font-family: Roboto Slab;
   font-size: 80px;
   color: #e74c3c;
   font-weight: 400;
